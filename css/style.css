@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --color1: #262A2C;
+    --color2: #E4B363;
+    --color3: #FFD080;
+    --color4: #F3DCB2;
+    --color5: #FBEEDA;
+    --color6: #F6F6F3;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Jost", sans-serif;
+}
+
+.font2,
+label {
+    font-family: "Jockey One", sans-serif;
+}
+
+body {
+    background: var(--color5);
+}
+
+nav {
+    background: var(--color2);
+}
+
+.nav-link {
+    font-size: 2rem;
+    transition: text-shadow 0.2s;
+}
+
+.nav-link:hover,
+#home:hover {
+    text-shadow: -3px 3px var(--color5);
+}
+
+#home,
+.nav-link {
+    color: var(--color1);
+    text-decoration: none;
+    font-family: "Jockey One", sans-serif;
+    transition: text-shadow 0.2s;
+}
+
+sub {
+    font-family: "Jockey One", sans-serif;
+    font-size: 2rem;
+}
+
+main {
+    background: var(--color6);
+    border: var(--color1) 2px solid;
+}
+
+footer {
+    background: var(--color1);
+    color: var(--color3);
+}
+
+#footer-abajo {
+    position: absolute;
+    bottom: 0;
+}
+
+.btn {
+    color: var(--color1);
+    background: var(--color2);
+}
+
+.btn:hover {
+    background: var(--color4);
+    color: var(--color1);
+}
+
+.menu {
+    display: block;
+    margin-top: 40px;
+    padding: 10px;
+    font-size: 1.3rem;
+}
+
+.menu p {
+    margin: 0;
+}
+
+.header,
+.header h2 {
+    background: var(--color1);
+    font-family: "Jockey One", sans-serif;
+    color: var(--color2);
+}
+
+.header a {
+    font-size: 1.2rem;
+}
+
+.alinear td {
+    vertical-align: middle;
+}
+
+th {
+    background: var(--color2);
+    font-weight: 500;
+}
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--color3);
+    box-shadow: 0 0 0 0.25rem var(--color4);
+}
+
+.form-check-input:checked {
+    background-color: var(--color2);
+    border-color: var(--color4);
+}
+
+label {
+    font-size: 1.2rem;
+}
+
+button[type=submit] {
+    font-weight: 500;
+}
+
+button[type=submit]:focus {
+    background: var(--color1);
+    color: var(--color2);
+}
