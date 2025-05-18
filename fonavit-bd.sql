@@ -65,3 +65,29 @@ INSERT INTO empleado VALUES
 ('CS650518', '26131518-3', 'Ruy Aurelio Casal Sáez', '2000-09-19', 24, '5624 Hubbard Dr, Battleboro, North Carolina, 27809', 'Puesto', 600, 'MH293675'),
 ('SM395148', '30386464-4', 'Mariana Gregorio Sancho Molina', '2002-11-04', 22, '14 Maple St, Warren, Rhode Island, 02885', 'Puesto', 600, 'ER842134'),
 ('DS485921', '43642720-0', 'Jennifer María de los Dolores Suárez', '2002-11-05', 22, '1011 5th St SE, Bemidji, Minnesota, 56601', 'Puesto', 600, 'ER842134');
+
+-- Login
+CREATE LOGIN administrador WITH PASSWORD = '1234';
+CREATE LOGIN sistema WITH PASSWORD = '4321';
+CREATE LOGIN webservice WITH PASSWORD = '0123';
+
+CREATE USER administrador FOR LOGIN administrador;
+CREATE USER sistema FOR LOGIN sistema;
+CREATE USER webservice FOR LOGIN webservice;
+
+GRANT SELECT, INSERT, DELETE, UPDATE TO administrador;
+GRANT ALTER ANY LOGIN TO administrador;
+GRANT ALTER ANY USER TO administrador;
+GRANT CONTROL SERVER TO administrador;
+
+GRANT SELECT, INSERT ON empleado TO sistema;
+GRANT SELECT, INSERT ON cliente TO sistema;
+GRANT SELECT, INSERT ON transaccion TO sistema;
+GRANT SELECT, INSERT ON prestamo TO sistema;
+
+-- Creado en bloque aparte
+CREATE VIEW vistaTransacciones AS 
+SELECT id, carnet, num_cuenta, dui, monto, fecha
+FROM transaccion;
+
+GRANT SELECT ON vistaTransacciones TO webservice;
