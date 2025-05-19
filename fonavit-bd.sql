@@ -34,7 +34,7 @@ CREATE TABLE transaccion (
 );
 
 CREATE TABLE prestamo (
-  id varchar PRIMARY KEY,
+  id char(6) PRIMARY KEY,
   num_cuenta int FOREIGN KEY REFERENCES cliente(num_cuenta),
   dui char(10),
   monto smallmoney,
@@ -66,6 +66,72 @@ INSERT INTO empleado VALUES
 ('SM395148', '30386464-4', 'Mariana Gregorio Sancho Molina', '2002-11-04', 22, '14 Maple St, Warren, Rhode Island, 02885', 'Puesto', 600, 'ER842134'),
 ('DS485921', '43642720-0', 'Jennifer María de los Dolores Suárez', '2002-11-05', 22, '1011 5th St SE, Bemidji, Minnesota, 56601', 'Puesto', 600, 'ER842134');
 
+INSERT INTO cliente VALUES
+(,'31388433-4', 'Lisandro Liberato Medina Domínguez', '2008-12-30', 18, '603 W Rambo St, Danville, Ohio, 43014', 'Casado/a'),
+(,'82523038-9', 'Tito Azucena Quesada Carrasco', '1961-01-11', 64, '388 Us 20 Hwy S, Basin, Wyoming, 82410', 'Casado/a'),
+(,'64102036-6', 'Patrocinio Dina Morales Navarro', '1962-03-07', 63, '20067 Appledowre Cir #13, Germantown, Maryland, 20876', 'Soltero/a'),
+(,'28145158-9', 'Noelia Libertad Miguel Martín', '1963-03-20', 62, '5105 Lawson Ave, Gulfport, Mississippi, 39507', 'Soltero/a'),
+(,'33137327-5', 'Mireya Alejo Durán Carmona', '1966-07-27', 58, '305 S 5th St E, Riverton, Wyoming, 82501', 'Soltero/a'),
+(,'64983352-0', 'Maite María de la Cruz Monte', '1966-09-20', 58, '198 River Forest Rd, Evansdale, Iowa, 50707', 'Soltero/a'),
+(,'15680194-8', 'Katalina Sonia Ybarra Molina', '1966-09-29', 58, '2011 River Reach Dr, Naples, Florida, 34104', 'Casado/a'),
+(,'62716169-2', 'Feliciano Felisa Capilla Campos', '1969-03-01', 56, '76 Lincoln St, Essex Junction, Vermont, 05452', 'Casado/a'),
+(,'54738441-5', 'Ovidia Hilda Félix Castillo', '1973-04-25', 52, '402 Apple Valley Rd #A, Ashfield, Massachusetts, 01330', 'Viudo/a - Divorciado/a'),
+(,'84311097-1', 'Germán Patrocinio Salinas Cambil', '1975-09-13', 49, '170 Forbes Rd #106, Braintree, Massachusetts, 02184', 'Viudo/a - Divorciado/a'),
+(,'09734462-0', 'Jerónimo Valerio González Ortega', '1980-10-07', 44, '209 Starkweather Dr, Beaver Dam, WI, 53916', 'Soltero/a'),
+(,'92525969-2', 'José Antonio Andrés Travieso', '1982-07-31', 42, '210 Arrowhead Dr #A4, Miles City, Montana, 59301', 'Viudo/a - Divorciado/a'),
+(,'34540287-1', 'Liliana Israel Medina Santana', '1984-02-05', 41, '99 Great Hollow Rd, Woodbury, Connecticut, 06798', 'Viudo/a - Divorciado/a'),
+(,'71658729-7', 'Nidia Marcelina Parra López', '1985-09-14', 39, '823 S 36th St, Quincy, Illinois, 62301', 'Viudo/a - Divorciado/a'),
+(,'07306850-3', 'Leonel Jair Caballero Lozano', '1986-05-30', 38, '152 County Rd #359, Jasper, Texas, 75951', 'Casado/a'),
+(,'16570202-6', 'Lorena Etelvina Ramos Pastor', '1988-08-12', 36, '106 Rr 1 N, North, South Carolina, 29112', 'Viudo/a - Divorciado/a'),
+(,'95113712-8', 'Jefferson Aarón Plaza Álvarez', '1988-10-28', 36, '1535 S 700th W, Woods Cross, Utah, 84087', 'Viudo/a - Divorciado/a'),
+(,'08301629-7', 'Maricruz Andrea Rivera Montero', '1995-11-07', 29, '179 Mountain Rd, Concord, New Hampshire, 03301', 'Casado/a'),
+(,'62354782-3', 'Florentina Próspero Bustillo Soto', '2001-07-28', 23, '320 5th St, Centertown, Kentucky, 42328', 'Soltero/a'),
+(,'99587804-5', 'Casandra Merche Benito Rodríguez', '2003-09-15', 21, '1234 N 725th W, Woods Cross, Utah, 84087', 'Soltero/a');
+
+INSERT INTO transaccion VALUES
+('982eff', 'PT756824', 1, '31388433-4', 951, '2020-08-04'),
+('3383b0', 'GS456149', 2, '82523038-9', 982, '2020-09-05'),
+('d21074', 'AV843508', 3, '64102036-6', 979, '2020-10-02'),
+('c4d192', 'FC732458', 4, '28145158-9', 341, '2021-05-17'),
+('5ef1fd', 'PJ498451', 5, '33137327-5', 72, '2021-06-19'),
+('f56c2a', 'MB789949', 6, '64983352-0', 575, '2021-10-26'),
+('779caa', 'CC355770', 7, '15680194-8', 908, '2022-05-17'),
+('474f0b', 'LB048595', 8, '62716169-2', 711, '2022-05-31'),
+('3f4b5f', 'AL504991', 9, '54738441-5', 265, '2022-10-06'),
+('ffbc76', 'FL109120', 10, '84311097-1', 953, '2023-08-02'),
+('9fb193', 'RR834813', 11, '09734462-0', 711, '2023-09-06'),
+('4e9545', 'CD084945', 12, '92525969-2', 261, '2023-09-11'),
+('c98de4', 'MM421612', 13, '34540287-1', 234, '2024-03-26'),
+('afb5b1', 'CE776670', 14, '71658729-7', 442, '2024-04-05'),
+('2a8897', 'CS650518', 15, '07306850-3', 845, '2024-05-18'),
+('cecf31', 'SM395148', 16, '16570202-6', 825, '2024-08-28'),
+('bb5885', 'DS485921', 17, '95113712-8', 689, '2024-10-08'),
+('7922e6', 'PT756824', 18, '08301629-7', 888, '2024-11-07'),
+('a886c4', 'GS456149', 19, '62354782-3', 844, '2024-12-25'),
+('2e8072', 'AV843508', 20, '99587804-5', 165, '2025-03-27');
+
+INSERT INTO prestamo VALUES
+('9bf705', 1, '31388433-4', 998, 1, '2020-05-19', 120),
+('1928a6', 2, '82523038-9', 186, 12, '2020-09-23', 30),
+('ffb810', 3, '64102036-6', 619, 3, '2020-10-30', 120),
+('8f8e4e', 4, '28145158-9', 287, 8, '2020-12-28', 30),
+('5fdca4', 5, '33137327-5', 252, 14, '2021-02-24', 30),
+('024c7a', 6, '64983352-0', 533, 11, '2021-04-28', 60),
+('88a4f7', 7, '15680194-8', 974, 8, '2021-07-21', 120),
+('c68433', 8, '62716169-2', 176, 4, '2022-02-03', 30),
+('d5138b', 9, '54738441-5', 137, 5, '2022-11-01', 30),
+('c6a76c', 10, '84311097-1', 531, 15, '2022-11-15', 60),
+('fcf310', 11, '09734462-0', 575, 3, '2022-12-17', 60),
+('6181e0', 12, '92525969-2', 714, 15, '2023-02-24', 120),
+('0cc4b3', 13, '34540287-1', 734, 11, '2023-05-05', 120),
+('0f077e', 14, '71658729-7', 368, 15, '2023-09-25', 60),
+('c662df', 15, '07306850-3', 731, 3, '2024-02-10', 120),
+('6f3368', 16, '16570202-6', 741, 9, '2024-06-12', 120),
+('ccac38', 17, '95113712-8', 875, 10, '2024-08-07', 120),
+('6a4688', 18, '08301629-7', 144, 9, '2025-01-04', 30),
+('0b4e61', 19, '62354782-3', 692, 8, '2025-01-18', 120),
+('d0f05d', 20, '99587804-5', 381, 15, '2025-02-04', 60);
+
 -- Login
 CREATE LOGIN administrador WITH PASSWORD = '1234';
 CREATE LOGIN sistema WITH PASSWORD = '4321';
@@ -85,7 +151,7 @@ GRANT SELECT, INSERT ON cliente TO sistema;
 GRANT SELECT, INSERT ON transaccion TO sistema;
 GRANT SELECT, INSERT ON prestamo TO sistema;
 
--- Creado en bloque aparte
+-- Vista de transacciones
 CREATE VIEW vistaTransacciones AS 
 SELECT id, carnet, num_cuenta, dui, monto, fecha
 FROM transaccion;
