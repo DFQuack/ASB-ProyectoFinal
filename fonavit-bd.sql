@@ -155,7 +155,7 @@ GRANT SELECT, INSERT ON prestamo TO sistema;
 
 -- Vista de transacciones
 CREATE VIEW vistaTransacciones AS 
-SELECT id, carnet, num_cuenta, dui, monto, fecha
+SELECT id, carnet, num_cuenta, dui, monto, tipo, fecha, activo
 FROM transaccion;
 
 GRANT SELECT ON vistaTransacciones TO webservice;
