@@ -159,3 +159,4 @@ SELECT id, carnet, num_cuenta, dui, monto, fecha
 FROM transaccion;
 
 GRANT SELECT ON vistaTransacciones TO webservice;
+
