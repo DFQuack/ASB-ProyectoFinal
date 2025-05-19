@@ -159,3 +159,185 @@ SELECT id, carnet, num_cuenta, dui, monto, fecha
 FROM transaccion;
 
 GRANT SELECT ON vistaTransacciones TO webservice;
+
+
+-- 1. Tabla de auditoría
+CREATE TABLE auditoria (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    tabla_afectada VARCHAR(100),
+    accion VARCHAR(20),
+    usuario_sql SYSNAME,
+    fecha DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- 2. Tabla resumen diaria
+CREATE TABLE TRANSACCIONES_DIARIAS (
+    id_transaccion char(6),
+    num_cuenta int,
+    dui_cliente char(10),
+    nombre_cliente varchar(50),
+    nombre_empleado varchar(50),
+    jefe_inmediato varchar(50),
+    monto smallmoney,
+    tipo_transaccion varchar(10),
+    prestamo_activo varchar(2)
+);
+GO
+
+-- 3. Procedimiento almacenado
+CREATE PROCEDURE ActualizarTransaccionesDiarias
+AS
+BEGIN
+    DELETE FROM TRANSACCIONES_DIARIAS;
+
+    INSERT INTO TRANSACCIONES_DIARIAS
+    SELECT 
+        t.id,
+        c.num_cuenta,
+        c.dui,
+        c.nombre,
+        e.nombre,
+        j.nombre AS jefe_inmediato,
+        t.monto,
+        t.tipo,
+        CASE 
+            WHEN EXISTS (
+                SELECT 1 FROM prestamo p 
+                WHERE p.num_cuenta = c.num_cuenta 
+                  AND CONVERT(DATE, p.fecha) = CONVERT(DATE, GETDATE())
+            ) THEN 'SI'
+            ELSE 'NO'
+        END AS prestamo_activo
+    FROM transaccion t
+    JOIN cliente c ON t.num_cuenta = c.num_cuenta
+    JOIN empleado e ON t.carnet = e.carnet
+    LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
+    WHERE CONVERT(DATE, t.fecha) = CONVERT(DATE, GETDATE());
+END;
+GO
+
+-- 4. Triggers para tabla TRANSACCION
+CREATE TRIGGER trg_Insert_Transaccion
+ON transaccion
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('transaccion', 'INSERT', SYSTEM_USER);
+    EXEC ActualizarTransaccionesDiarias;
+END;
+GO
+
+CREATE TRIGGER trg_Update_Transaccion
+ON transaccion
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('transaccion', 'UPDATE', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Transaccion
+ON transaccion
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('transaccion', 'DELETE', SYSTEM_USER);
+END;
+GO
+
+-- 5. Triggers para tabla EMPLEADO
+CREATE TRIGGER trg_Insert_Empleado
+ON empleado
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('empleado', 'INSERT', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Update_Empleado
+ON empleado
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('empleado', 'UPDATE', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Empleado
+ON empleado
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('empleado', 'DELETE', SYSTEM_USER);
+END;
+GO
+
+-- 6. Triggers para tabla CLIENTE
+CREATE TRIGGER trg_Insert_Cliente
+ON cliente
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('cliente', 'INSERT', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Update_Cliente
+ON cliente
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('cliente', 'UPDATE', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Cliente
+ON cliente
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('cliente', 'DELETE', SYSTEM_USER);
+END;
+GO
+
+-- 7. Triggers para tabla PRESTAMO
+CREATE TRIGGER trg_Insert_Prestamo
+ON prestamo
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('prestamo', 'INSERT', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Update_Prestamo
+ON prestamo
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('prestamo', 'UPDATE', SYSTEM_USER);
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Prestamo
+ON prestamo
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
+    VALUES ('prestamo', 'DELETE', SYSTEM_USER);
+END;
+GO
