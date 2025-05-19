@@ -160,7 +160,6 @@ FROM transaccion;
 
 GRANT SELECT ON vistaTransacciones TO webservice;
 
-<<<<<<< HEAD
 
 -- 1. Tabla de auditoría
 CREATE TABLE auditoria (
@@ -342,5 +341,3 @@ BEGIN
     VALUES ('prestamo', 'DELETE', SYSTEM_USER);
 END;
 GO
-=======
->>>>>>> eb9d180b94fc1ba56e9ef9e2baeedfc4ab0fd23b
