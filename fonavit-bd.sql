@@ -155,8 +155,26 @@ GRANT SELECT, INSERT ON prestamo TO sistema;
 
 -- Vista de transacciones
 CREATE VIEW vistaTransacciones AS 
-SELECT id, carnet, num_cuenta, dui, monto, tipo, fecha, activo
-FROM transaccion;
+SELECT 
+    t.id AS id_transaccion,
+    c.num_cuenta AS numero_cuenta,
+    c.dui AS documento_identidad,
+    c.nombre AS nombre_duenio_cuenta,
+    e.nombre AS nombre_usuario,
+    j.nombre AS nombre_jefe_inmediato,
+    ABS(t.monto) AS monto_transaccion,
+	t.tipo AS tipo_transaccion,
+    CASE 
+        WHEN p.num_cuenta IS NOT NULL THEN 'SI' 
+        ELSE 'NO' 
+    END AS prestamo_activo,
+    t.fecha AS fecha_transaccion
+FROM transaccion t
+JOIN cliente c ON t.num_cuenta = c.num_cuenta
+JOIN empleado e ON t.carnet = e.carnet
+LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
+LEFT JOIN prestamo p ON c.num_cuenta = p.num_cuenta
+WHERE t.fecha = CAST(GETDATE() AS DATE);
 
 GRANT SELECT ON vistaTransacciones TO webservice;
 
