@@ -179,17 +179,19 @@ WHERE t.fecha = CAST(GETDATE() AS DATE);
 GRANT SELECT ON vistaTransacciones TO webservice;
 
 
--- 1. Tabla de auditoría
-CREATE TABLE auditoria (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    tabla_afectada VARCHAR(100),
-    accion VARCHAR(20),
-    usuario_sql SYSNAME,
-    fecha DATETIME DEFAULT GETDATE()
+GO
+
+-- 1. Tabla AUDITORIA (estructura corregida según enunciado)
+CREATE TABLE AUDITORIA (
+    IdAuditoria INT IDENTITY(1,1) PRIMARY KEY,
+    IdEmpleado INT,
+    NombreEmpleado VARCHAR(50),
+    TablaModificada VARCHAR(50),
+    FechaModificacion DATE
 );
 GO
 
--- 2. Tabla resumen diaria
+-- 2. Tabla TRANSACCIONES_DIARIAS
 CREATE TABLE TRANSACCIONES_DIARIAS (
     id_transaccion char(6),
     num_cuenta int,
@@ -235,14 +237,17 @@ BEGIN
 END;
 GO
 
--- 4. Triggers para tabla TRANSACCION
+-- 4. Triggers para TRANSACCION
 CREATE TRIGGER trg_Insert_Transaccion
 ON transaccion
 AFTER INSERT
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('transaccion', 'INSERT', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT e.carnet, e.nombre, 'transaccion', CAST(GETDATE() AS DATE)
+    FROM inserted i
+    JOIN empleado e ON i.carnet = e.carnet;
+
     EXEC ActualizarTransaccionesDiarias;
 END;
 GO
@@ -252,8 +257,10 @@ ON transaccion
 AFTER UPDATE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('transaccion', 'UPDATE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT e.carnet, e.nombre, 'transaccion', CAST(GETDATE() AS DATE)
+    FROM inserted i
+    JOIN empleado e ON i.carnet = e.carnet;
 END;
 GO
 
@@ -262,19 +269,22 @@ ON transaccion
 AFTER DELETE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('transaccion', 'DELETE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT e.carnet, e.nombre, 'transaccion', CAST(GETDATE() AS DATE)
+    FROM deleted d
+    JOIN empleado e ON d.carnet = e.carnet;
 END;
 GO
 
--- 5. Triggers para tabla EMPLEADO
+-- 5. Triggers para EMPLEADO
 CREATE TRIGGER trg_Insert_Empleado
 ON empleado
 AFTER INSERT
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('empleado', 'INSERT', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT i.carnet, i.nombre, 'empleado', CAST(GETDATE() AS DATE)
+    FROM inserted i;
 END;
 GO
 
@@ -283,8 +293,9 @@ ON empleado
 AFTER UPDATE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('empleado', 'UPDATE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT i.carnet, i.nombre, 'empleado', CAST(GETDATE() AS DATE)
+    FROM inserted i;
 END;
 GO
 
@@ -293,19 +304,21 @@ ON empleado
 AFTER DELETE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('empleado', 'DELETE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT d.carnet, d.nombre, 'empleado', CAST(GETDATE() AS DATE)
+    FROM deleted d;
 END;
 GO
 
--- 6. Triggers para tabla CLIENTE
+-- 6. Triggers para CLIENTE
 CREATE TRIGGER trg_Insert_Cliente
 ON cliente
 AFTER INSERT
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('cliente', 'INSERT', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT NULL, nombre, 'cliente', CAST(GETDATE() AS DATE)
+    FROM inserted;
 END;
 GO
 
@@ -314,8 +327,9 @@ ON cliente
 AFTER UPDATE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('cliente', 'UPDATE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT NULL, nombre, 'cliente', CAST(GETDATE() AS DATE)
+    FROM inserted;
 END;
 GO
 
@@ -324,19 +338,21 @@ ON cliente
 AFTER DELETE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('cliente', 'DELETE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT NULL, nombre, 'cliente', CAST(GETDATE() AS DATE)
+    FROM deleted;
 END;
 GO
 
--- 7. Triggers para tabla PRESTAMO
+-- 7. Triggers para PRESTAMO
 CREATE TRIGGER trg_Insert_Prestamo
 ON prestamo
 AFTER INSERT
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('prestamo', 'INSERT', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT NULL, 'Desconocido', 'prestamo', CAST(GETDATE() AS DATE)
+    FROM inserted;
 END;
 GO
 
@@ -345,8 +361,9 @@ ON prestamo
 AFTER UPDATE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('prestamo', 'UPDATE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT NULL, 'Desconocido', 'prestamo', CAST(GETDATE() AS DATE)
+    FROM inserted;
 END;
 GO
 
@@ -355,7 +372,8 @@ ON prestamo
 AFTER DELETE
 AS
 BEGIN
-    INSERT INTO auditoria (tabla_afectada, accion, usuario_sql)
-    VALUES ('prestamo', 'DELETE', SYSTEM_USER);
+    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
+    SELECT NULL, 'Desconocido', 'prestamo', CAST(GETDATE() AS DATE)
+    FROM deleted;
 END;
 GO
