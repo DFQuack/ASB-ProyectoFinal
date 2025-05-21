@@ -154,12 +154,12 @@ GRANT SELECT, INSERT ON transaccion TO sistema;
 GRANT SELECT, INSERT ON prestamo TO sistema;
 
 -- Vista de transacciones
-CREATE VIEW vistaTransacciones AS 
+CREATE VIEW TRANSACCIONES_DIARIAS AS 
 SELECT 
     t.id AS id_transaccion,
     c.num_cuenta AS numero_cuenta,
     c.dui AS documento_identidad,
-    c.nombre AS nombre_duenio_cuenta,
+    c.nombre AS nombre_dueño,
     e.nombre AS nombre_usuario,
     j.nombre AS nombre_jefe_inmediato,
     ABS(t.monto) AS monto_transaccion,
@@ -176,36 +176,12 @@ LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
 LEFT JOIN prestamo p ON c.num_cuenta = p.num_cuenta
 WHERE t.fecha = CAST(GETDATE() AS DATE);
 
-GRANT SELECT ON vistaTransacciones TO webservice;
+GRANT SELECT ON TRANSACCIONES_DIARIAS TO webservice;
 
 
 GO
 
--- 1. Tabla AUDITORIA (estructura corregida según enunciado)
-CREATE TABLE AUDITORIA (
-    IdAuditoria INT IDENTITY(1,1) PRIMARY KEY,
-    IdEmpleado INT,
-    NombreEmpleado VARCHAR(50),
-    TablaModificada VARCHAR(50),
-    FechaModificacion DATE
-);
-GO
-
--- 2. Tabla TRANSACCIONES_DIARIAS
-CREATE TABLE TRANSACCIONES_DIARIAS (
-    id_transaccion char(6),
-    num_cuenta int,
-    dui_cliente char(10),
-    nombre_cliente varchar(50),
-    nombre_empleado varchar(50),
-    jefe_inmediato varchar(50),
-    monto smallmoney,
-    tipo_transaccion varchar(10),
-    prestamo_activo varchar(2)
-);
-GO
-
--- 3. Procedimiento almacenado
+-- Procedimiento almacenado
 CREATE PROCEDURE ActualizarTransaccionesDiarias
 AS
 BEGIN
@@ -237,7 +213,17 @@ BEGIN
 END;
 GO
 
--- 4. Triggers para TRANSACCION
+-- Tabla AUDITORIA
+CREATE TABLE AUDITORIA (
+    IdAuditoria INT IDENTITY(1,1) PRIMARY KEY,
+    IdEmpleado INT,
+    NombreEmpleado VARCHAR(50),
+    TablaModificada VARCHAR(50),
+    FechaModificacion DATE
+);
+GO
+
+-- Triggers para TRANSACCION
 CREATE TRIGGER trg_Insert_Transaccion
 ON transaccion
 AFTER INSERT
