@@ -69,7 +69,7 @@ INSERT INTO empleado VALUES
 ('DS485921', '43642720-0', 'Jennifer María de los Dolores Suárez', '2002-11-05', 22, '1011 5th St SE, Bemidji, Minnesota, 56601', 'Puesto', 600, 'ER842134');
 
 INSERT INTO cliente(dui, nombre, fecha_nac, edad, direccion, estado_fam) VALUES
-('31388433-4', 'Lisandro Liberato Medina Domínguez', '2008-12-30', 18, '603 W Rambo St, Danville, Ohio, 43014', 'Casado/a'),
+('31388433-4', 'Lisandro Liberato Medina Domínguez', '2006-12-30', 18, '603 W Rambo St, Danville, Ohio, 43014', 'Casado/a'),
 ('82523038-9', 'Tito Azucena Quesada Carrasco', '1961-01-11', 64, '388 Us 20 Hwy S, Basin, Wyoming, 82410', 'Casado/a'),
 ('64102036-6', 'Patrocinio Dina Morales Navarro', '1962-03-07', 63, '20067 Appledowre Cir #13, Germantown, Maryland, 20876', 'Soltero/a'),
 ('28145158-9', 'Noelia Libertad Miguel Martín', '1963-03-20', 62, '5105 Lawson Ave, Gulfport, Mississippi, 39507', 'Soltero/a'),
@@ -134,31 +134,12 @@ INSERT INTO prestamo VALUES
 ('0b4e61', 19, '62354782-3', 692, 8, '2025-01-18', 120),
 ('d0f05d', 20, '99587804-5', 381, 15, '2025-02-04', 60);
 
--- Login
-CREATE LOGIN administrador WITH PASSWORD = '1234';
-CREATE LOGIN sistema WITH PASSWORD = '4321';
-CREATE LOGIN webservice WITH PASSWORD = '0123';
-
-CREATE USER administrador FOR LOGIN administrador;
-CREATE USER sistema FOR LOGIN sistema;
-CREATE USER webservice FOR LOGIN webservice;
-
-GRANT SELECT, INSERT, DELETE, UPDATE TO administrador;
-GRANT ALTER ANY LOGIN TO administrador;
-GRANT ALTER ANY USER TO administrador;
-GRANT CONTROL SERVER TO administrador;
-
-GRANT SELECT, INSERT ON empleado TO sistema;
-GRANT SELECT, INSERT ON cliente TO sistema;
-GRANT SELECT, INSERT ON transaccion TO sistema;
-GRANT SELECT, INSERT ON prestamo TO sistema;
-
 -- Vista de transacciones
 CREATE VIEW TRANSACCIONES_DIARIAS AS 
 SELECT 
     t.id AS id_transaccion,
-    c.num_cuenta AS numero_cuenta,
-    c.dui AS documento_identidad,
+    t.num_cuenta AS numero_cuenta,
+    t.dui AS documento_identidad,
     c.nombre AS nombre_dueño,
     e.nombre AS nombre_usuario,
     j.nombre AS nombre_jefe_inmediato,
@@ -178,8 +159,6 @@ WHERE t.fecha = CAST(GETDATE() AS DATE);
 
 GRANT SELECT ON TRANSACCIONES_DIARIAS TO webservice;
 
-
-GO
 
 -- Procedimiento almacenado
 CREATE PROCEDURE ActualizarTransaccionesDiarias
@@ -363,3 +342,22 @@ BEGIN
     FROM deleted;
 END;
 GO
+
+-- Login
+CREATE LOGIN administrador WITH PASSWORD = '1234';
+CREATE LOGIN sistema WITH PASSWORD = '4321';
+CREATE LOGIN webservice WITH PASSWORD = '0123';
+
+CREATE USER administrador FOR LOGIN administrador;
+CREATE USER sistema FOR LOGIN sistema;
+CREATE USER webservice FOR LOGIN webservice;
+
+GRANT SELECT, INSERT, DELETE, UPDATE TO administrador;
+GRANT ALTER ANY LOGIN TO administrador;
+GRANT ALTER ANY USER TO administrador;
+GRANT CONTROL SERVER TO administrador;
+
+GRANT SELECT, INSERT ON empleado TO sistema;
+GRANT SELECT, INSERT ON cliente TO sistema;
+GRANT SELECT, INSERT ON transaccion TO sistema;
+GRANT SELECT, INSERT ON prestamo TO sistema;

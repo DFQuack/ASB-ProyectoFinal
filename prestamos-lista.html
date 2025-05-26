@@ -26,8 +26,6 @@
   <main class="container my-5 p-0">
     <div class="header p-4 d-flex justify-content-between">
       <h2 class="mb-0 flex-grow-1">Lista de préstamos</h2>
-      <a href="#" class="btn mx-2" id="borrar">Eliminar préstamo</a>
-      <a href="prestamos-editar.html" class="btn mx-2">Editar préstamo</a>
       <a href="prestamos-crear.html" class="btn d-flex align-items-center ms-2">
         Añadir préstamo <span class="material-symbols-outlined">add</span>
       </a>
@@ -40,30 +38,58 @@
             <th>ID</th>
             <th>Cuenta de cliente</th>
             <th>DUI de cliente</th>
-            <th>Monto</th>
-            <th>Interés</th>
+            <th>Monto ($)</th>
+            <th>Interés (%)</th>
             <th>Fecha</th>
             <th>Plazo de pago (días)</th>
+            <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>96DF2F</td>
+            <td>9bf705</td>
             <td>000001</td>
-            <td>0000000-0</td>
-            <td>$100.00</td>
-            <td>5%</td>
-            <td>2025-1-2</td>
-            <td>30</td>
+            <td>31388433-4</td>
+            <td>998.00</td>
+            <td>1%</td>
+            <td>2020-05-19</td>
+            <td>120</td>
+            <td>
+              <div class="btn-group">
+                <a href="prestamos-editar.html" class="btn">Editar</a>
+                <a href="#" class="btn borrar">Eliminar</a>
+              </div>
+            </td>
           </tr>
           <tr>
-            <td>6EC23E</td>
+            <td>1928a6</td>
             <td>000002</td>
-            <td>0000000-0</td>
-            <td>$500.00</td>
-            <td>5%</td>
-            <td>2024-12-24</td>
-            <td>120</td>
+            <td>82523038-9</td>
+            <td>186.00</td>
+            <td>12%</td>
+            <td>2020-09-23</td>
+            <td>30</td>
+            <td>
+              <div class="btn-group">
+                <a href="prestamos-editar.html" class="btn">Editar</a>
+                <a href="#" class="btn borrar">Eliminar</a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>d0f05d</td>
+            <td>000020</td>
+            <td>99587804-5</td>
+            <td>381.00</td>
+            <td>15%</td>
+            <td>2025-02-04</td>
+            <td>60</td>
+            <td>
+              <div class="btn-group">
+                <a href="prestamos-editar.html" class="btn">Editar</a>
+                <a href="#" class="btn borrar">Eliminar</a>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
