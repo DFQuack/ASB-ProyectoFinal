@@ -21,7 +21,7 @@ CREATE TABLE cliente (
   fecha_nac date,
   edad tinyint,
   direccion varchar(100),
-  estado_fam varchar(10)
+  estado_fam varchar(30)
 );
 
 CREATE TABLE transaccion (
@@ -68,27 +68,27 @@ INSERT INTO empleado VALUES
 ('SM395148', '30386464-4', 'Mariana Gregorio Sancho Molina', '2002-11-04', 22, '14 Maple St, Warren, Rhode Island, 02885', 'Puesto', 600, 'ER842134'),
 ('DS485921', '43642720-0', 'Jennifer María de los Dolores Suárez', '2002-11-05', 22, '1011 5th St SE, Bemidji, Minnesota, 56601', 'Puesto', 600, 'ER842134');
 
-INSERT INTO cliente VALUES
-(,'31388433-4', 'Lisandro Liberato Medina Domínguez', '2008-12-30', 18, '603 W Rambo St, Danville, Ohio, 43014', 'Casado/a'),
-(,'82523038-9', 'Tito Azucena Quesada Carrasco', '1961-01-11', 64, '388 Us 20 Hwy S, Basin, Wyoming, 82410', 'Casado/a'),
-(,'64102036-6', 'Patrocinio Dina Morales Navarro', '1962-03-07', 63, '20067 Appledowre Cir #13, Germantown, Maryland, 20876', 'Soltero/a'),
-(,'28145158-9', 'Noelia Libertad Miguel Martín', '1963-03-20', 62, '5105 Lawson Ave, Gulfport, Mississippi, 39507', 'Soltero/a'),
-(,'33137327-5', 'Mireya Alejo Durán Carmona', '1966-07-27', 58, '305 S 5th St E, Riverton, Wyoming, 82501', 'Soltero/a'),
-(,'64983352-0', 'Maite María de la Cruz Monte', '1966-09-20', 58, '198 River Forest Rd, Evansdale, Iowa, 50707', 'Soltero/a'),
-(,'15680194-8', 'Katalina Sonia Ybarra Molina', '1966-09-29', 58, '2011 River Reach Dr, Naples, Florida, 34104', 'Casado/a'),
-(,'62716169-2', 'Feliciano Felisa Capilla Campos', '1969-03-01', 56, '76 Lincoln St, Essex Junction, Vermont, 05452', 'Casado/a'),
-(,'54738441-5', 'Ovidia Hilda Félix Castillo', '1973-04-25', 52, '402 Apple Valley Rd #A, Ashfield, Massachusetts, 01330', 'Viudo/a - Divorciado/a'),
-(,'84311097-1', 'Germán Patrocinio Salinas Cambil', '1975-09-13', 49, '170 Forbes Rd #106, Braintree, Massachusetts, 02184', 'Viudo/a - Divorciado/a'),
-(,'09734462-0', 'Jerónimo Valerio González Ortega', '1980-10-07', 44, '209 Starkweather Dr, Beaver Dam, WI, 53916', 'Soltero/a'),
-(,'92525969-2', 'José Antonio Andrés Travieso', '1982-07-31', 42, '210 Arrowhead Dr #A4, Miles City, Montana, 59301', 'Viudo/a - Divorciado/a'),
-(,'34540287-1', 'Liliana Israel Medina Santana', '1984-02-05', 41, '99 Great Hollow Rd, Woodbury, Connecticut, 06798', 'Viudo/a - Divorciado/a'),
-(,'71658729-7', 'Nidia Marcelina Parra López', '1985-09-14', 39, '823 S 36th St, Quincy, Illinois, 62301', 'Viudo/a - Divorciado/a'),
-(,'07306850-3', 'Leonel Jair Caballero Lozano', '1986-05-30', 38, '152 County Rd #359, Jasper, Texas, 75951', 'Casado/a'),
-(,'16570202-6', 'Lorena Etelvina Ramos Pastor', '1988-08-12', 36, '106 Rr 1 N, North, South Carolina, 29112', 'Viudo/a - Divorciado/a'),
-(,'95113712-8', 'Jefferson Aarón Plaza Álvarez', '1988-10-28', 36, '1535 S 700th W, Woods Cross, Utah, 84087', 'Viudo/a - Divorciado/a'),
-(,'08301629-7', 'Maricruz Andrea Rivera Montero', '1995-11-07', 29, '179 Mountain Rd, Concord, New Hampshire, 03301', 'Casado/a'),
-(,'62354782-3', 'Florentina Próspero Bustillo Soto', '2001-07-28', 23, '320 5th St, Centertown, Kentucky, 42328', 'Soltero/a'),
-(,'99587804-5', 'Casandra Merche Benito Rodríguez', '2003-09-15', 21, '1234 N 725th W, Woods Cross, Utah, 84087', 'Soltero/a');
+INSERT INTO cliente(dui, nombre, fecha_nac, edad, direccion, estado_fam) VALUES
+('31388433-4', 'Lisandro Liberato Medina Domínguez', '2008-12-30', 18, '603 W Rambo St, Danville, Ohio, 43014', 'Casado/a'),
+('82523038-9', 'Tito Azucena Quesada Carrasco', '1961-01-11', 64, '388 Us 20 Hwy S, Basin, Wyoming, 82410', 'Casado/a'),
+('64102036-6', 'Patrocinio Dina Morales Navarro', '1962-03-07', 63, '20067 Appledowre Cir #13, Germantown, Maryland, 20876', 'Soltero/a'),
+('28145158-9', 'Noelia Libertad Miguel Martín', '1963-03-20', 62, '5105 Lawson Ave, Gulfport, Mississippi, 39507', 'Soltero/a'),
+('33137327-5', 'Mireya Alejo Durán Carmona', '1966-07-27', 58, '305 S 5th St E, Riverton, Wyoming, 82501', 'Soltero/a'),
+('64983352-0', 'Maite María de la Cruz Monte', '1966-09-20', 58, '198 River Forest Rd, Evansdale, Iowa, 50707', 'Soltero/a'),
+('15680194-8', 'Katalina Sonia Ybarra Molina', '1966-09-29', 58, '2011 River Reach Dr, Naples, Florida, 34104', 'Casado/a'),
+('62716169-2', 'Feliciano Felisa Capilla Campos', '1969-03-01', 56, '76 Lincoln St, Essex Junction, Vermont, 05452', 'Casado/a'),
+('54738441-5', 'Ovidia Hilda Félix Castillo', '1973-04-25', 52, '402 Apple Valley Rd #A, Ashfield, Massachusetts, 01330', 'Viudo/a - Divorciado/a'),
+('84311097-1', 'Germán Patrocinio Salinas Cambil', '1975-09-13', 49, '170 Forbes Rd #106, Braintree, Massachusetts, 02184', 'Viudo/a - Divorciado/a'),
+('09734462-0', 'Jerónimo Valerio González Ortega', '1980-10-07', 44, '209 Starkweather Dr, Beaver Dam, WI, 53916', 'Soltero/a'),
+('92525969-2', 'José Antonio Andrés Travieso', '1982-07-31', 42, '210 Arrowhead Dr #A4, Miles City, Montana, 59301', 'Viudo/a - Divorciado/a'),
+('34540287-1', 'Liliana Israel Medina Santana', '1984-02-05', 41, '99 Great Hollow Rd, Woodbury, Connecticut, 06798', 'Viudo/a - Divorciado/a'),
+('71658729-7', 'Nidia Marcelina Parra López', '1985-09-14', 39, '823 S 36th St, Quincy, Illinois, 62301', 'Viudo/a - Divorciado/a'),
+('07306850-3', 'Leonel Jair Caballero Lozano', '1986-05-30', 38, '152 County Rd #359, Jasper, Texas, 75951', 'Casado/a'),
+('16570202-6', 'Lorena Etelvina Ramos Pastor', '1988-08-12', 36, '106 Rr 1 N, North, South Carolina, 29112', 'Viudo/a - Divorciado/a'),
+('95113712-8', 'Jefferson Aarón Plaza Álvarez', '1988-10-28', 36, '1535 S 700th W, Woods Cross, Utah, 84087', 'Viudo/a - Divorciado/a'),
+('08301629-7', 'Maricruz Andrea Rivera Montero', '1995-11-07', 29, '179 Mountain Rd, Concord, New Hampshire, 03301', 'Casado/a'),
+('62354782-3', 'Florentina Próspero Bustillo Soto', '2001-07-28', 23, '320 5th St, Centertown, Kentucky, 42328', 'Soltero/a'),
+('99587804-5', 'Casandra Merche Benito Rodríguez', '2003-09-15', 21, '1234 N 725th W, Woods Cross, Utah, 84087', 'Soltero/a');
 
 INSERT INTO transaccion VALUES
 ('982eff', 'PT756824', 1, '31388433-4', 951, 'Retiro', '2020-08-04', 0),
