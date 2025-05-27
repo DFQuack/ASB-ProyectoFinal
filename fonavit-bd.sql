@@ -4,45 +4,45 @@ USE fonavit_bd;
 -- Creación de tablas
 CREATE TABLE empleado (
   carnet char(8) PRIMARY KEY,
-  dui char(10),
-  nombre varchar(50),
-  fecha_nac date,
-  edad tinyint,
-  direccion varchar(100),
-  puesto varchar(20),
-  sueldo smallmoney,
+  dui char(10) NOT NULL,
+  nombre varchar(50) NOT NULL,
+  fecha_nac date NOT NULL,
+  edad tinyint NOT NULL,
+  direccion varchar(100) NOT NULL,
+  puesto varchar(20) NOT NULL,
+  sueldo smallmoney NOT NULL,
   carnet_jefe char(8)
 );
 
 CREATE TABLE cliente (
   num_cuenta int PRIMARY KEY IDENTITY(1,1),
-  dui char(10),
-  nombre varchar(50),
-  fecha_nac date,
-  edad tinyint,
-  direccion varchar(100),
-  estado_fam varchar(30)
+  dui char(10) NOT NULL,
+  nombre varchar(50) NOT NULL,
+  fecha_nac date NOT NULL,
+  edad tinyint NOT NULL,
+  direccion varchar(100) NOT NULL,
+  estado_fam varchar(30) NOT NULL
 );
 
 CREATE TABLE transaccion (
   id char(6) PRIMARY KEY,
-  carnet char(8) FOREIGN KEY REFERENCES empleado(carnet),
-  num_cuenta int FOREIGN KEY REFERENCES cliente(num_cuenta),
-  dui char(10),
-  monto smallmoney,
-  tipo varchar(6),
-  fecha date
+  carnet_empleado char(8) FOREIGN KEY REFERENCES empleado(carnet) ON DELETE CASCADE ON UPDATE CASCADE,
+  num_cuenta int FOREIGN KEY REFERENCES cliente(num_cuenta) ON DELETE CASCADE ON UPDATE CASCADE,
+  dui char(10) NOT NULL,
+  monto smallmoney NOT NULL,
+  tipo varchar(6) NOT NULL,
+  fecha date NOT NULL
 );
 
 CREATE TABLE prestamo (
   id char(6) PRIMARY KEY,
-  num_cuenta int FOREIGN KEY REFERENCES cliente(num_cuenta),
-  dui char(10),
-  monto smallmoney,
-  interes tinyint,
-  fecha date,
-  plazo tinyint,
-  estado varchar(10)
+  num_cuenta int FOREIGN KEY REFERENCES cliente(num_cuenta) ON DELETE CASCADE ON UPDATE CASCADE,
+  dui char(10) NOT NULL,
+  monto smallmoney NOT NULL,
+  interes tinyint NOT NULL,
+  fecha date NOT NULL,
+  plazo tinyint NOT NULL,
+  estado varchar(10) NOT NULL
 );
 
 -- Inserción de datos
@@ -156,9 +156,6 @@ LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
 LEFT JOIN prestamo p ON c.num_cuenta = p.num_cuenta
 WHERE t.fecha = CAST(GETDATE() AS DATE);
 
-GRANT SELECT ON TRANSACCIONES_DIARIAS TO webservice;
-
-
 -- Procedimiento almacenado
 CREATE PROCEDURE ActualizarTransaccionesDiarias
 AS
@@ -189,163 +186,13 @@ BEGIN
     LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
     WHERE CONVERT(DATE, t.fecha) = CONVERT(DATE, GETDATE());
 END;
-GO
 
--- Tabla AUDITORIA
-CREATE TABLE AUDITORIA (
-    IdAuditoria INT IDENTITY(1,1) PRIMARY KEY,
-    IdEmpleado INT,
-    NombreEmpleado VARCHAR(50),
-    TablaModificada VARCHAR(50),
-    FechaModificacion DATE
-);
-GO
+-- Usuarios
+USE master;
 
--- Triggers para TRANSACCION
-CREATE TRIGGER trg_Insert_Transaccion
-ON transaccion
-AFTER INSERT
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT e.carnet, e.nombre, 'transaccion', CAST(GETDATE() AS DATE)
-    FROM inserted i
-    JOIN empleado e ON i.carnet = e.carnet;
-
-    EXEC ActualizarTransaccionesDiarias;
-END;
-GO
-
-CREATE TRIGGER trg_Update_Transaccion
-ON transaccion
-AFTER UPDATE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT e.carnet, e.nombre, 'transaccion', CAST(GETDATE() AS DATE)
-    FROM inserted i
-    JOIN empleado e ON i.carnet = e.carnet;
-END;
-GO
-
-CREATE TRIGGER trg_Delete_Transaccion
-ON transaccion
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT e.carnet, e.nombre, 'transaccion', CAST(GETDATE() AS DATE)
-    FROM deleted d
-    JOIN empleado e ON d.carnet = e.carnet;
-END;
-GO
-
--- 5. Triggers para EMPLEADO
-CREATE TRIGGER trg_Insert_Empleado
-ON empleado
-AFTER INSERT
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT i.carnet, i.nombre, 'empleado', CAST(GETDATE() AS DATE)
-    FROM inserted i;
-END;
-GO
-
-CREATE TRIGGER trg_Update_Empleado
-ON empleado
-AFTER UPDATE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT i.carnet, i.nombre, 'empleado', CAST(GETDATE() AS DATE)
-    FROM inserted i;
-END;
-GO
-
-CREATE TRIGGER trg_Delete_Empleado
-ON empleado
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT d.carnet, d.nombre, 'empleado', CAST(GETDATE() AS DATE)
-    FROM deleted d;
-END;
-GO
-
--- 6. Triggers para CLIENTE
-CREATE TRIGGER trg_Insert_Cliente
-ON cliente
-AFTER INSERT
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT NULL, nombre, 'cliente', CAST(GETDATE() AS DATE)
-    FROM inserted;
-END;
-GO
-
-CREATE TRIGGER trg_Update_Cliente
-ON cliente
-AFTER UPDATE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT NULL, nombre, 'cliente', CAST(GETDATE() AS DATE)
-    FROM inserted;
-END;
-GO
-
-CREATE TRIGGER trg_Delete_Cliente
-ON cliente
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT NULL, nombre, 'cliente', CAST(GETDATE() AS DATE)
-    FROM deleted;
-END;
-GO
-
--- 7. Triggers para PRESTAMO
-CREATE TRIGGER trg_Insert_Prestamo
-ON prestamo
-AFTER INSERT
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT NULL, 'Desconocido', 'prestamo', CAST(GETDATE() AS DATE)
-    FROM inserted;
-END;
-GO
-
-CREATE TRIGGER trg_Update_Prestamo
-ON prestamo
-AFTER UPDATE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT NULL, 'Desconocido', 'prestamo', CAST(GETDATE() AS DATE)
-    FROM inserted;
-END;
-GO
-
-CREATE TRIGGER trg_Delete_Prestamo
-ON prestamo
-AFTER DELETE
-AS
-BEGIN
-    INSERT INTO AUDITORIA (IdEmpleado, NombreEmpleado, TablaModificada, FechaModificacion)
-    SELECT NULL, 'Desconocido', 'prestamo', CAST(GETDATE() AS DATE)
-    FROM deleted;
-END;
-GO
-
--- Login
-CREATE LOGIN administrador WITH PASSWORD = '1234';
-CREATE LOGIN sistema WITH PASSWORD = '4321';
-CREATE LOGIN webservice WITH PASSWORD = '0123';
+CREATE LOGIN administrador WITH PASSWORD = '123456';
+CREATE LOGIN sistema WITH PASSWORD = '12345';
+CREATE LOGIN webservice WITH PASSWORD = '1234';
 
 CREATE USER administrador FOR LOGIN administrador;
 CREATE USER sistema FOR LOGIN sistema;
@@ -355,8 +202,160 @@ GRANT SELECT, INSERT, DELETE, UPDATE TO administrador;
 GRANT ALTER ANY LOGIN TO administrador;
 GRANT ALTER ANY USER TO administrador;
 GRANT CONTROL SERVER TO administrador;
+GO
+
+USE fonavit_bd;
 
 GRANT SELECT, INSERT ON empleado TO sistema;
 GRANT SELECT, INSERT ON cliente TO sistema;
 GRANT SELECT, INSERT ON transaccion TO sistema;
 GRANT SELECT, INSERT ON prestamo TO sistema;
+
+GRANT SELECT ON TRANSACCIONES_DIARIAS TO webservice;
+GO
+
+-- Tabla AUDITORIA
+CREATE TABLE AUDITORIA (
+    IdAuditoria int PRIMARY KEY IDENTITY(1,1),
+    IdRegistro varchar(10),
+    NombreUsuario varchar(50),
+    TablaModificada varchar(50),
+    Accion varchar(20),
+    FechaModificacion date
+);
+
+-- Triggers para EMPLEADO
+CREATE TRIGGER trg_Insert_Empleado
+ON empleado
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.carnet, CURRENT_USER, 'empleado', 'Inserción', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Update_Empleado
+ON empleado
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.carnet, CURRENT_USER, 'empleado', 'Actualización', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Empleado
+ON empleado
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT d.carnet, CURRENT_USER, 'empleado', 'Eliminación', CAST(GETDATE() AS DATE)
+    FROM deleted d;
+END;
+GO
+
+-- Triggers para CLIENTE
+CREATE TRIGGER trg_Insert_Cliente
+ON cliente
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.num_cuenta, CURRENT_USER, 'cliente', 'Inserción', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Update_Cliente
+ON cliente
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.num_cuenta, CURRENT_USER, 'cliente', 'Actualización', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Cliente
+ON cliente
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT d.num_cuenta, CURRENT_USER, 'cliente', 'Eliminación', CAST(GETDATE() AS DATE)
+    FROM deleted d;
+END;
+GO
+
+-- Triggers para TRANSACCION
+CREATE TRIGGER trg_Insert_Transaccion
+ON transaccion
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.id, CURRENT_USER, 'transaccion', 'Inserción', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Update_Transaccion
+ON transaccion
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.id, CURRENT_USER, 'transaccion', 'Actualización', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Transaccion
+ON transaccion
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT d.id, CURRENT_USER, 'transaccion', 'Eliminación', CAST(GETDATE() AS DATE)
+    FROM deleted d;
+END;
+GO
+
+-- Triggers para PRESTAMO
+CREATE TRIGGER trg_Insert_Prestamo
+ON prestamo
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.id, CURRENT_USER, 'prestamo', 'Inserción', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Update_Prestamo
+ON prestamo
+AFTER UPDATE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT i.id, CURRENT_USER, 'prestamo', 'Actualización', CAST(GETDATE() AS DATE)
+    FROM inserted i;
+END;
+GO
+
+CREATE TRIGGER trg_Delete_Prestamo
+ON prestamo
+AFTER DELETE
+AS
+BEGIN
+    INSERT INTO AUDITORIA (IdRegistro, NombreUsuario, TablaModificada, Accion, FechaModificacion)
+    SELECT d.id, CURRENT_USER, 'prestamo', 'Eliminación', CAST(GETDATE() AS DATE)
+    FROM deleted d;
+END;
+GO
