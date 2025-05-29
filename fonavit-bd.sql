@@ -156,34 +156,6 @@ LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
 LEFT JOIN prestamo p ON c.num_cuenta = p.num_cuenta
 WHERE t.fecha = CAST(GETDATE() AS DATE);
 
--- Procedimiento almacenado
-CREATE PROCEDURE ActualizarTransaccionesDiarias
-AS
-BEGIN
-    DELETE FROM TRANSACCIONES_DIARIAS;
-
-    INSERT INTO TRANSACCIONES_DIARIAS
-    SELECT 
-    t.id AS [ID Transacción],
-    t.num_cuenta AS [Núm. cuenta],
-    t.dui AS [DUI de dueño],
-    c.nombre AS [Nombre de dueño],
-    e.nombre AS [Trabajador que hizo transacción],
-    j.nombre AS [Jefe de trabajador],
-    ABS(t.monto) AS [Monto ($)],
-	t.tipo AS [Tipo de transacción],
-    CASE 
-        WHEN p.estado = 'Pagado' THEN 'No' 
-        ELSE 'Sí' 
-    END AS [¿Préstamo activo?]
-    FROM transaccion t
-    JOIN cliente c ON t.num_cuenta = c.num_cuenta
-    JOIN empleado e ON t.carnet_empleado = e.carnet
-    LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
-    LEFT JOIN prestamo p ON c.num_cuenta = p.num_cuenta
-    WHERE t.fecha = CAST(GETDATE() AS DATE);
-END;
-
 -- Usuarios
 USE master;
 
