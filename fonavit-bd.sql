@@ -164,27 +164,24 @@ BEGIN
 
     INSERT INTO TRANSACCIONES_DIARIAS
     SELECT 
-        t.id,
-        c.num_cuenta,
-        c.dui,
-        c.nombre,
-        e.nombre,
-        j.nombre AS jefe_inmediato,
-        t.monto,
-        t.tipo,
-        CASE 
-            WHEN EXISTS (
-                SELECT 1 FROM prestamo p 
-                WHERE p.num_cuenta = c.num_cuenta 
-                  AND CONVERT(DATE, p.fecha) = CONVERT(DATE, GETDATE())
-            ) THEN 'SI'
-            ELSE 'NO'
-        END AS prestamo_activo
+    t.id AS [ID Transacción],
+    t.num_cuenta AS [Núm. cuenta],
+    t.dui AS [DUI de dueño],
+    c.nombre AS [Nombre de dueño],
+    e.nombre AS [Trabajador que hizo transacción],
+    j.nombre AS [Jefe de trabajador],
+    ABS(t.monto) AS [Monto ($)],
+	t.tipo AS [Tipo de transacción],
+    CASE 
+        WHEN p.estado = 'Pagado' THEN 'No' 
+        ELSE 'Sí' 
+    END AS [¿Préstamo activo?]
     FROM transaccion t
     JOIN cliente c ON t.num_cuenta = c.num_cuenta
-    JOIN empleado e ON t.carnet = e.carnet
+    JOIN empleado e ON t.carnet_empleado = e.carnet
     LEFT JOIN empleado j ON e.carnet_jefe = j.carnet
-    WHERE CONVERT(DATE, t.fecha) = CONVERT(DATE, GETDATE());
+    LEFT JOIN prestamo p ON c.num_cuenta = p.num_cuenta
+    WHERE t.fecha = CAST(GETDATE() AS DATE);
 END;
 
 -- Usuarios
@@ -197,6 +194,9 @@ CREATE LOGIN webservice WITH PASSWORD = '1234';
 CREATE USER administrador FOR LOGIN administrador;
 CREATE USER sistema FOR LOGIN sistema;
 CREATE USER webservice FOR LOGIN webservice;
+GO
+
+USE fonavit_bd;
 
 GRANT SELECT, INSERT, DELETE, UPDATE TO administrador;
 GRANT ALTER ANY LOGIN TO administrador;
@@ -204,7 +204,6 @@ GRANT ALTER ANY USER TO administrador;
 GRANT CONTROL SERVER TO administrador;
 GO
 
-USE fonavit_bd;
 
 GRANT SELECT, INSERT ON empleado TO sistema;
 GRANT SELECT, INSERT ON cliente TO sistema;
